@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login with MFA</title>
+</head>
+<body>
+
+  <h2>Login</h2>
+
+  <input id="username" placeholder="Username" /><br><br>
+  <input id="password" type="password" placeholder="Password" /><br><br>
+  <button type="button" onclick="login()">Login</button>
+
+  <h2>Enter OTP</h2>
+
+  <input id="otp" placeholder="Enter OTP" /><br><br>
+  <button type="button" onclick="verifyOTP()">Verify OTP</button>
+
+  <p id="result"></p>
+
+  <script>
+    async function login() {
+      try {
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+
+        const res = await fetch("http://127.0.0.1:3000/login", {  // ✅ FIXED
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+        document.getElementById("result").innerText = data.message;
+      } catch (error) {
+        console.error("Login error:", error);
+        document.getElementById("result").innerText = "Error connecting to server";
+      }
+    }
+
+    async function verifyOTP() {
+      try {
+        const token = document.getElementById("otp").value;
+
+        const res = await fetch("http://127.0.0.1:3000/verify-otp", {  // ✅ FIXED
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ token })
+        });
+
+        const data = await res.json();
+        document.getElementById("result").innerText = data.message;
+      } catch (error) {
+        console.error("OTP error:", error);
+        document.getElementById("result").innerText = "Error verifying OTP";
+      }
+    }
+  </script>
+
+</body>
+</html>
